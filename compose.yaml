@@ -1,0 +1,83 @@
+services:
+  proxy:
+    image: jkaninda/goma-gateway
+    container_name: proxy
+    command: server 
+    restart: always
+    volumes:
+      - ./config:/etc/goma/
+    ports:
+      - 80:8080
+      - 443:8443
+    networks:
+    - web
+  ####### Nexcloud ########
+  nextcloud-db:
+    image: mariadb:10.6
+    restart: always
+    container_name: nextcloud-db
+    command: --transaction-isolation=READ-COMMITTED --log-bin=binlog --binlog-format=ROW
+    volumes:
+      - nextcloud-db:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_PASSWORD=password
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+    networks:
+      - web
+  nextcloud:
+    image: nextcloud:stable-apache
+    restart: always
+    container_name: nextcloud
+    links:
+      - nextcloud-db
+    volumes:
+      - nextcloud:/var/www/html
+    environment:
+      - MYSQL_PASSWORD=password
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+      - MYSQL_HOST=nextcloud-db
+    networks:
+      - web
+  ####### Wordpress ########
+  wordpress-db:
+    image: mysql:8.0
+    restart: always
+    container_name: wordpress-db
+    environment:
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: password
+      MYSQL_RANDOM_ROOT_PASSWORD: '1'
+    volumes:
+      - wordpress-db:/var/lib/mysql
+    networks:
+      - web
+  wordpress:
+    image: wordpress:php8.1-apache
+    container_name: wordpress
+    restart: always
+    environment:
+      WORDPRESS_DB_HOST: wordpress-db
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: password
+      WORDPRESS_DB_NAME: wordpress
+    ports:
+      - 82:80
+    volumes:
+      - wordpress-www:/var/www/html
+      - wordpress-data:/data
+    networks:
+      - web
+
+networks:
+  web:
+    external: true
+volumes:
+  nextcloud:
+  nextcloud-db:
+  wordpress-www:
+  wordpress-data:
+  wordpress-db:
