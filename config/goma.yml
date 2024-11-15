@@ -1,15 +1,14 @@
 ##### GomaGateway
 version: "1.0"
 gateway:
-  sslCertFile: cert.pem
-  sslKeyFile: key.pem
+  #sslCertFile: cert.pem
+  #sslKeyFile: key.pem
   writeTimeout: 15
   readTimeout: 15
   idleTimeout: 30
   disableRouteHealthCheckError: false
   disableHealthCheckStatus: false
   enableMetrics: true
-  disableKeepAlive: false
   ##### Define routes
   routes:
     - name: nextcloud
