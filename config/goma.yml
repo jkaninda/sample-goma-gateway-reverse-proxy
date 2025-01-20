@@ -43,9 +43,9 @@ gateway:
       rewrite: /
       ## Example of load balancing route
       backends:
-       - endPoint: http://wordpress
+       - endpoint: http://wordpress
          weight: 1
-       - endPoint: http://wordpress2
+       - endpoint: http://wordpress2
          weight: 3
       blockCommonExploits: false
       healthCheck:
