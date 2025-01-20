@@ -12,6 +12,7 @@ gateway:
   routes:
     - path: /
       name: nextcloud
+      disabled: false
       hosts:
       - nextcloud.example.dev
       - nextcloud.localhost
@@ -19,7 +20,6 @@ gateway:
       destination: http://nextcloud
       blockCommonExploits: false
       insecureSkipVerify: false
-      rateLimit: 0
       healthCheck:
         path: /
         interval: 15s
@@ -35,6 +35,7 @@ gateway:
         headers:
       middlewares: []
     - name: wordpress
+      disabled: false
       hosts:
       - wordpress.example.dev
       - wordpress.localhost
@@ -47,7 +48,6 @@ gateway:
        - endPoint: http://wordpress2
          weight: 3
       blockCommonExploits: false
-      rateLimit: 0
       healthCheck:
         path: /
         interval: 15s
