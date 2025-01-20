@@ -1,24 +1,22 @@
 ##### GomaGateway
-version: "1.0"
+version: 2
 gateway:
-  #sslCertFile: cert.pem
-  #sslKeyFile: key.pem
   writeTimeout: 15
   readTimeout: 15
   idleTimeout: 30
-  disableRouteHealthCheckError: false
-  disableHealthCheckStatus: false
-  enableMetrics: true
+  tls:  # Global TLS configuration for the gateway
+    keys:  # List of TLS certificates and private keys
+     # - cert: /path/to/certificate.crt  # File path to the TLS certificate
+     #   key: /path/to/private.key  # File path to the private key
   ##### Define routes
   routes:
-    - name: nextcloud
+    - path: /
+      name: nextcloud
       hosts:
       - nextcloud.example.dev
       - nextcloud.localhost
-      path: /
       rewrite: /
       destination: http://nextcloud
-      disableHostFording: false
       blockCommonExploits: false
       insecureSkipVerify: false
       rateLimit: 0
@@ -35,8 +33,6 @@ gateway:
           - http://nextcloud.example.dev
           - http://nextcloud.localhost
         headers:
-
-      interceptErrors: []
       middlewares: []
     - name: wordpress
       hosts:
@@ -46,9 +42,10 @@ gateway:
       rewrite: /
       ## Example of load balancing route
       backends:
-       - http://wordpress
-       - http://wordpress
-      disableHostFording: false
+       - endPoint: http://wordpress
+         weight: 1
+       - endPoint: http://wordpress2
+         weight: 3
       blockCommonExploits: false
       rateLimit: 0
       healthCheck:
@@ -63,13 +60,13 @@ gateway:
           - https://wordpress.example.dev
           - http://wordpress.example.dev
           - http://wordpress.localhost
-      interceptErrors: []
-      middlewares: []
+      middlewares:
+       #- basic-auth # Protech /wp-admin with second security basic auth
 middlewares:
   - name: basic-auth
     type: basic
     paths:
-      - /admin/*
+      - /wp-admin
     rule:
-      username: admin
-      password: admin
+      users: 
+      - admin:admin

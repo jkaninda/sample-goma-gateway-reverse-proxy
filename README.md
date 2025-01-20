@@ -4,6 +4,7 @@ A sample Docker deployment of Goma Gateway as a reverse proxy.
 
 - Nexcloud
 - Wordpress
+- Wordpress2
 
 ## Requirements
 - Docker
@@ -11,7 +12,7 @@ A sample Docker deployment of Goma Gateway as a reverse proxy.
 ## SSL
 You can generate ssl certificate using [mkcert](https://github.com/FiloSottile/mkcert)
 
-uncomment `sslCertFile` and `sslKeyFile` in  config/goma.yml.
+uncomment `cert` and `key` in  config/goma.yml.
 
 ```sh
 mkcert -key-file config/key.pem -cert-file config/cert.pem "*.example.dev"
